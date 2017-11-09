@@ -1,2 +1,12 @@
-# react-combobox
- React autocomplete component (combobox)
+# React Components Playground 
+React Components builder
+
+## Release History
+
+_(Nothing yet)_
+
+
+## License
+
+Licensed under the MIT license.
+
