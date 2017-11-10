@@ -1,44 +1,12 @@
 {
-  "parserOptions": {
-    "ecmaVersion": 7,
-    "sourceType": "module"
-  },
-  "env": {
-    "es6": true,
-    "node": true
-  },
-  "globals": {
-    "document": false,
-    "navigator": false,
-    "window": false,
-    "Animation": false,
-    "KeyframeEffect": false,
-    "GroupEffect": false,
-    "SequenceEffect": false,
-    "Pippio": false
-  },
-  "parser": "babel-eslint",
   "extends": [
-    "airbnb",
-    "prettier",
-    "prettier/flowtype",
-    "prettier/react"
+    "standard",
+    "standard-react"
   ],
-  "rules": {
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "import/extensions": [1, "never"],
-    "react/forbid-prop-types": [0],
-    "jsx-a11y/no-static-element-interactions": [0]
-  },
-  "settings": {
-    "import/resolver": {
-      "webpack": {
-        "config": {
-          "resolve": {
-            "extensions": ["", ".js", ".jsx", ".json", ".coffee", ".cjsx"]
-          }
-        }
-      }
-    }
+  "plugins": [
+    "jest"
+  ],
+  "env": {
+    "jest/globals": true
   }
 }

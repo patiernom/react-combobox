@@ -1,15 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import R from 'ramda';
+import * as R from 'ramda';
 import classNames from 'classnames';
-import "./styles/combobox.css";
+import './styles/form.css';
+import './styles/combobox.css';
 
-const isServer = typeof window === 'undefined';
+const isClient = typeof window !== 'undefined';
 
 class Combobox extends React.Component {
   constructor(props) {
     super(props);
-    this.displayName = "Combobox";
+    this.displayName = 'Combobox';
     this.state = {
       cursor: -1,
       showHelper: false,
@@ -31,7 +32,7 @@ class Combobox extends React.Component {
       hiddenValue: this.props.inputValue,
       options: actualOptions
     });
-  }
+  };
 
   onKeyDown = (evt) => {
     const {cursor, options} = this.state;
@@ -53,7 +54,7 @@ class Combobox extends React.Component {
   };
 
   onFocus = () => {
-    if (this.props.likeSelect) {
+    if (this.props.alwaysOpen) {
       this.setState({
         showHelper: true
       });
@@ -79,7 +80,13 @@ class Combobox extends React.Component {
   onMouseOver = (evt) => {
     evt.persist();
 
-    const index = R.findIndex(R.propEq('label', evt.target.innerText))(this.state.options);
+    let index = -1;
+    if (this.props.keyValueInput) {
+      index = R.findIndex(R.propEq('label', evt.target.innerText))(this.state.options);
+    }
+    else{
+      index = this.state.options.indexOf(evt.target.innerText)
+    }
 
     this.setState({
       cursor: index
@@ -131,28 +138,15 @@ class Combobox extends React.Component {
   onKeyPress = (evt) => {
     evt.persist();
 
-    const options = this.props.options;
+    const {options} = this.props;
     const query = evt.target.value;
-    const isSearchable = (query.length > 0 || this.props.likeSelect);
+    const isSearchable = (query.length > 0 || this.props.alwaysOpen);
 
     if (this.props.ajaxOption && query.length > 0) {
       return this.props.ajaxRequest(query, this.filterOptions(query, isSearchable))
     }
 
     return this.filterOptions(query, isSearchable)(options);
-  };
-
-  filterOptions = (query, isSearchable) => (options) => {
-    const filterOption = [];
-    filterOption.true = this.objectOption;
-    filterOption.false = this.strOption;
-
-    const newOptions = options.filter(filterOption[this.props.keyValueInput](query, isSearchable));
-
-    this.setState({
-      showHelper: isSearchable,
-      options: newOptions
-    });
   };
 
   getSelection = (index) => {
@@ -185,6 +179,19 @@ class Combobox extends React.Component {
     return label;
   };
 
+  filterOptions = (query, isSearchable) => (options) => {
+    const filterOption = [];
+    filterOption.true = this.objectOption;
+    filterOption.false = this.strOption;
+
+    const newOptions = options.filter(filterOption[this.props.keyValueInput](query, isSearchable));
+
+    this.setState({
+      showHelper: isSearchable,
+      options: newOptions
+    });
+  };
+
   clearHelper = () => {
     this.setState({
       cursor: -1,
@@ -214,16 +221,17 @@ class Combobox extends React.Component {
 
   renderHelper = () => {
     if (this.state.options.length > 0 && this.state.showHelper) {
-      if (!isServer) {
+      if (isClient) {
         document.addEventListener('click', this.onOutsideClick, false);
       }
 
       return <div className={"list-group"}>{this.state.options.map(this.renderOption)}</div>
     }
 
-    if (!isServer) {
+    if (isClient) {
       document.removeEventListener('click', this.onOutsideClick, false);
     }
+
     return null;
   };
 
@@ -275,7 +283,7 @@ Combobox.propTypes = {
   id: PropTypes.any,
   keyValueInput: PropTypes.bool,
   ajaxOption: PropTypes.bool,
-  likeSelect: PropTypes.bool,
+  alwaysOpen: PropTypes.bool,
   ajaxRequest: PropTypes.func
 };
 
@@ -287,7 +295,7 @@ Combobox.defaultProps = {
   placeholder: "",
   keyValueInput: true,
   ajaxOption: false,
-  likeSelect: false,
+  alwaysOpen: false,
   ajaxRequest: undefined
 };
 

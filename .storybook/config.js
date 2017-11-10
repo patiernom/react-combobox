@@ -1,9 +1,9 @@
-/* eslint-disable import/no-extraneous-dependencies, import/no-unresolved, import/extensions */
-
 import { configure } from '@storybook/react';
 
 function loadStories() {
-  require('../stories');
+  require('../stories/index.js');
+  require('../stories/combobox.js');
+
 }
 
 configure(loadStories, module);
