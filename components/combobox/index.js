@@ -1,16 +1,16 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import * as R from 'ramda';
-import classNames from 'classnames';
-import './styles/form.css';
-import './styles/combobox.css';
+import React from "react";
+import PropTypes from "prop-types";
+import * as R from "ramda";
+import classNames from "classnames";
+import "./styles/form.css";
+import "./styles/combobox.css";
 
-const isClient = typeof window !== 'undefined';
+const isClient = typeof window !== "undefined";
 
 class Combobox extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
-    this.displayName = 'Combobox';
+    this.displayName = "Combobox";
     this.state = {
       cursor: -1,
       showHelper: false,
@@ -20,10 +20,10 @@ class Combobox extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount () {
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps) {
     const options = nextProps.ajaxOption ? this.state.options : nextProps.options;
     const actualOptions = options || [];
 
@@ -45,11 +45,11 @@ class Combobox extends React.Component {
     } else if (evt.keyCode === 38 && cursor > 0) { // arrow up/down button should select next/previous list element
       this.setState(prevState => ({
         cursor: prevState.cursor - 1
-      }))
+      }));
     } else if (evt.keyCode === 40 && cursor < options.length - 1) {
       this.setState(prevState => ({
         cursor: prevState.cursor + 1
-      }))
+      }));
     }
   };
 
@@ -74,7 +74,7 @@ class Combobox extends React.Component {
 
     this.setState({
       value: evt.target.value
-    })
+    });
   };
 
   onMouseOver = (evt) => {
@@ -82,10 +82,9 @@ class Combobox extends React.Component {
 
     let index = -1;
     if (this.props.keyValueInput) {
-      index = R.findIndex(R.propEq('label', evt.target.innerText))(this.state.options);
-    }
-    else{
-      index = this.state.options.indexOf(evt.target.innerText)
+      index = R.findIndex(R.propEq("label", evt.target.innerText))(this.state.options);
+    } else {
+      index = this.state.options.indexOf(evt.target.innerText);
     }
 
     this.setState({
@@ -143,7 +142,7 @@ class Combobox extends React.Component {
     const isSearchable = (query.length > 0 || this.props.alwaysOpen);
 
     if (this.props.ajaxOption && query.length > 0) {
-      return this.props.ajaxRequest(query, this.filterOptions(query, isSearchable))
+      return this.props.ajaxRequest(query, this.filterOptions(query, isSearchable));
     }
 
     return this.filterOptions(query, isSearchable)(options);
@@ -161,7 +160,7 @@ class Combobox extends React.Component {
 
   getLabel = (value, options) => {
     if (this.props.keyValueInput && value && value !== "") {
-      const selection = R.find(R.propEq('value', value), options) || {};
+      const selection = R.find(R.propEq("value", value), options) || {};
 
       return selection.label;
     }
@@ -171,7 +170,7 @@ class Combobox extends React.Component {
 
   getValue = (label) => {
     if (this.props.keyValueInput) {
-      const selection = R.find(R.propEq('label', label), this.state.options) || {};
+      const selection = R.find(R.propEq("label", label), this.state.options) || {};
 
       return selection.value;
     }
@@ -215,37 +214,36 @@ class Combobox extends React.Component {
       {"active": this.state.cursor === index}
     );
 
-    return <a key={`suggestion-${index}`} className={currentClass} onMouseOver={this.onMouseOver}
-              onClick={this.onClick}>{suggestion}</a>;
+    return <a key={`suggestion-${index}`} className={currentClass} onMouseOver={this.onMouseOver} onClick={this.onClick}>{suggestion}</a>;
   };
 
   renderHelper = () => {
     if (this.state.options.length > 0 && this.state.showHelper) {
       if (isClient) {
-        document.addEventListener('click', this.onOutsideClick, false);
+        document.addEventListener("click", this.onOutsideClick, false);
       }
 
-      return <div className={"list-group"}>{this.state.options.map(this.renderOption)}</div>
+      return <div className={"list-group"}>{this.state.options.map(this.renderOption)}</div>;
     }
 
     if (isClient) {
-      document.removeEventListener('click', this.onOutsideClick, false);
+      document.removeEventListener("click", this.onOutsideClick, false);
     }
 
     return null;
   };
 
-  render() {
+  render () {
     return (
-      <div id={this.props.id} className={"combo-box"} ref={node => { this.node = node; }}>
+      <div id={this.props.id} className={"combo-box"} ref={node => { this.node = node }}>
         <input
           type={"hidden"}
-          ref={(c) => { this.selection = c; }}
+          ref={(c) => { this.selection = c }}
           value={this.state.hiddenValue}
         />
         <input
           type={"text"}
-          ref={(c) => { this.combobox = c; }}
+          ref={(c) => { this.combobox = c }}
           onChange={this.onChange}
           onFocus={this.onFocus}
           className={this.props.inputClassName}
